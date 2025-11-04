@@ -1,0 +1,12 @@
+v4l2_capture:
+  allocator: ~
+  device: "/dev/video0"
+  width: 640
+  height: 480
+  numBuffers: 4
+  pixel_format: "YUYV"
+holoviz:
+  window_title: "Camera Stream"
+  width: 1280
+  height: 720
+  tensors: [ ]
