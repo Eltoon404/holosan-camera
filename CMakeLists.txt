@@ -24,5 +24,15 @@ target_link_libraries(webcam_holoviz
     holoscan::ops::v4l2
     holoscan::ops::holoviz
     holoscan::ops::format_converter
-  
 )
+
+# Link GXF multimedia (VideoBuffer symbols) explicitly
+find_library(GXF_MULTIMEDIA_LIB NAMES gxf_multimedia
+  HINTS $ENV{HOLOSCAN_LIB_DIR}
+  PATHS /opt/nvidia/holoscan/lib /opt/nvidia/holoscan/lib64
+)
+if (GXF_MULTIMEDIA_LIB)
+  target_link_libraries(webcam_holoviz PRIVATE ${GXF_MULTIMEDIA_LIB})
+else()
+  message(WARNING "libgxf_multimedia not found; linking may fail if VideoBuffer is used")
+endif()
