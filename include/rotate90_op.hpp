@@ -26,7 +26,7 @@ class Rotate90Op : public holoscan::Operator {
                holoscan::OutputContext& op_output,
                holoscan::ExecutionContext&) override {
     auto in_entity = op_input.receive<nvidia::gxf::Entity>("in").value();
-    // merr VideoBuffer-in hyrës
+    //  VideoBuffer-in input
     auto maybe_video = in_entity.get<nvidia::gxf::VideoBuffer>();
     if (!maybe_video) { op_output.emit(in_entity, "out"); return; }
     auto in_vb = maybe_video.value();
@@ -43,20 +43,16 @@ class Rotate90Op : public holoscan::Operator {
       return;
     }
     const int in_stride = static_cast<int>(in_size_bytes / in_h);
-    // përmasat e daljes (swap W/H për 90/270)
     auto out_info = info;
     if (q % 2) { out_info.width = in_h; out_info.height = in_w; }
-    // krijo entitet + buffer të ri
     auto out_entity_exp = nvidia::gxf::Entity::New(in_entity.context());
     if (!out_entity_exp) { op_output.emit(in_entity, "out"); return; }
     auto out_entity = out_entity_exp.value();
     auto out_vb_exp = out_entity.add<nvidia::gxf::VideoBuffer>();
     if (!out_vb_exp) { op_output.emit(in_entity, "out"); return; }
     auto out_vb = out_vb_exp.value();
-    // storage/layout si hyrja
     const auto storage = in_vb->storage_type();
     const auto layout = nvidia::gxf::SurfaceLayout::GXF_SURFACE_LAYOUT_PITCH_LINEAR;
-    // :white_check_mark: krijo Handle<GXF Allocator> nga resource-i Holoscan (përmes CID)
     nvidia::gxf::Handle<nvidia::gxf::Allocator> alloc_handle;
     {
       std::shared_ptr<holoscan::Allocator> alloc_sp = allocator_.get();
@@ -139,6 +135,6 @@ class Rotate90Op : public holoscan::Operator {
     op_output.emit(out_entity, "out");
   }
  private:
-  // përdor shared_ptr<Resource> që të injektohet nga Arg("allocator") = pool
+
   holoscan::Parameter<std::shared_ptr<holoscan::Allocator>> allocator_;
 };
