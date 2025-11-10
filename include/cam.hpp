@@ -13,13 +13,10 @@ class V4L2OverlayApp : public holoscan::Application {
         "multithread-scheduler",
         holoscan::Arg("worker_thread_number") = 2);
     this->scheduler(mt_sched);
-
-    // Configure operators from YAML to avoid type mismatches
     auto v4l2 = make_operator<holoscan::ops::V4L2VideoCaptureOp>(
         "v4l2_capture",
         from_config("v4l2_capture"),
         holoscan::Arg("allocator") = pool);
-
     auto viz = make_operator<holoscan::ops::HolovizOp>(
         "holoviz",
         from_config("holoviz"));
@@ -30,9 +27,6 @@ class V4L2OverlayApp : public holoscan::Application {
         "holoviz_90",
         from_config("holoviz_90"));
 
-    // Route rotated frames to both windows:
-    // - out_landscape -> main window (0°/180°)
-    // - out_portrait  -> portrait window (90°/270°)
     add_flow(v4l2, rot90, {{"signal", "in"}});
     add_flow(rot90, viz,   {{"out_landscape", "receivers"}});
     add_flow(rot90, viz90, {{"out_portrait",  "receivers"}});
