@@ -11,4 +11,12 @@ holoviz:
   width: 854
   height: 480
   tensors: [ ]
-`
+  
+holoviz_90:
+  window_title: "Camera Stream"
+  width: 854
+  height: 480
+  tensors: [ ]
+
+rotate90:
+  quarters: 0
